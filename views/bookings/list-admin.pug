@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+
+  ul.nav.nav-tabs
+    li(class= (status === 'handout') ? 'active' : '')
+      a(href="/bookings/handout")
+        | Active
+    li(class= (status === 'open') ? 'active' : '')
+      a(href="/bookings/open")
+        | Upcoming
+    li(class= (status === 'closed') ? 'active' : '')
+      a(href="/bookings/closed")
+        | Archived
+
+  br
+  .table-responsive
+    table
+      tr
+        th Name
+        th Device (ID)
+        th Start
+        th End
+        th Handout
+        th Takeback
+        th
+        th
+        th
+
+      if (bookings && bookings.length > 0)
+        each booking in bookings
+          include list-entry-admin.jade
+      else
+        tr
+          td(colspan=9)
+            | No bookings...
+
+      if (moreAvailable > 0)
+        tr
+          td(colspan="9", align="center")
+            a.load-more(href=moreUrl) Load more...

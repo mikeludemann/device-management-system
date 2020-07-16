@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+
+  if(!gadgets || gadgets.length === 0)
+    h4 No gadgets found...
+  else
+    ul.gadget-list
+      - each gadget in gadgets
+          include entry.jade
+
+    div.clearfix

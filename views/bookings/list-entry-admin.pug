@@ -1,0 +1,64 @@
+tr
+  td
+    =booking.user.name
+  td
+    a(href="/gadgets/" + (booking.gadget.id || gadget._id))
+      =booking.gadgetname
+      | &nbsp;
+      | (
+      =booking.gadget.hwid || gadget.hwid
+      |)
+  td
+    =fmtDatetime(booking.start)
+  td
+    if (booking.openend)
+      | Until further
+    else
+      =fmtDatetime(booking.end)
+      if (booking.expired && booking.status !== 'closed')
+        br
+        span.text-danger
+          strong (Expired)
+  td
+    if (booking.handoutuser)
+      =booking.handoutuser.name
+      br
+      span.small
+        =fmtDatetime(booking.handoutdate)
+    else
+      | -
+  td
+    if (booking.closeuser)
+      =booking.closeuser.displayname
+      br
+      span.small
+        =fmtDatetime(booking.closedate)
+    else
+      | -
+  td.tools
+    if (booking.status != 'closed')
+      a(
+        href="/bookings/" + booking._id + "/edit",
+        data-toggle="modal",
+        data-target="#bookingModal",
+        title="Edit booking"
+      ).edit
+  td.tools
+    if (booking.status == 'open')
+      a(
+        data-href="/bookings/" + booking._id + "/handout",
+        data-target="#handout-modal",
+        title="Handout gadget"
+      ).handOut.copy-href
+    if (booking.status == 'handout')
+      a(
+        data-href="/bookings/"+booking._id+"/takeback",
+        data-target="#takeback-modal",
+        title="Takeback gadget"
+      ).takeBack.copy-href
+  td.tools
+    a(
+      data-href="/bookings/" + booking._id + "/remove",
+      data-target="#delete-booking-modal",
+      title="Cancel booking"
+    ).cancel.copy-href

@@ -1,0 +1,77 @@
+form(method='post', action="/bookings/" + gadgetId + "/save", id="book")
+  .modal-header
+    button(type="button", class="close", data-dismiss="modal") &times;
+
+    h3 Booking
+    if (gadget)
+      = gadget.brand
+      |&nbsp;
+      b= gadget.model
+    else
+      = booking.gadgetname
+
+  input(type='hidden', name='_id', value=booking._id)
+
+  .modal-body
+
+    if(error)
+      .alert.alert-danger.alert-dismissible
+        button.close(data-dismiss="alert") &times;
+        = error
+
+    .row
+      .col-md-5
+        h4 Start
+        input(type='date', name='startdate', value=startdate)
+        span.dateIcon
+        br
+        input(type='time', name='starttime', value=starttime)
+        span.timeIcon
+
+      .col-md-2.btw
+        img(src="/img/till_btn.gif", width="26")
+
+      .col-md-5.end-box
+        h4 End&nbsp;
+          if (user.role === 'admin')
+            label.small
+              | (Book until further&nbsp;
+              input(
+                type="checkbox",
+                name="openend",
+                checked=(openend == true ? "checked" : undefined),
+                id="open-end-box")
+              |)
+        input(type='date', name='enddate', value=enddate, disabled=openend===true)
+        span.dateIcon
+        input(type='time', name='endtime', value=endtime, disabled=openend===true)
+        span.timeIcon
+      .clear
+
+  .modal-footer
+    .row
+      .col-md-6.text-left
+        if (users && user.role !== 'user' && booking._id && !booking.expired && booking.status !== 'open')
+          select(name='newOwner').form-control
+            option(value='false') Transfer booking to...
+            - each u in users
+              if (u._id != user._id && u.email.length > 1)
+                option(value=u._id)
+                  =u.email
+
+      .col-md-6
+        a.btn(onclick="bookNow(); return false;") Save booking
+
+
+script(type='text/javascript').
+  $('#open-end-box').on('change', function (e) {
+    if ($(this).is(':checked')) {
+      $('#book input[name="enddate"]').attr('disabled', true);
+      $('#book input[name="endtime"]').attr('disabled', true);
+      $('#book .end-box span').addClass('disabled');
+    } else {
+      $('#book input[name="enddate"]').removeAttr('disabled');
+      $('#book input[name="endtime"]').removeAttr('disabled');
+      $('#book .end-box span').removeClass('disabled');
+    }
+  });

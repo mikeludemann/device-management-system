@@ -1,0 +1,96 @@
+extends ../layout
+
+block content
+
+  div.modal(id="modal")
+    div.modal-dialog
+      div.modal-content
+        div.modal-header
+          button(type="button", class="close", data-dismiss="modal") &times;
+          h3 Delete gadget?
+        div.modal-body
+          p Deleting a gadget will also delete all related bookings. Are you sure?
+        div.modal-footer
+          a.btn.btn-danger(href="/gadgets/" + gadget._id + "/remove") Delete gadget
+
+  .details
+    .row
+      .col-md-8
+        br
+        a.btn(href="/gadgets/") back
+        h2= gadget.brand
+        h1= gadget.model
+
+      .col-md-4
+        if(gadget.hasImage)
+          img(src=gadget.imagePath)
+        else
+          img(src='/img/dummy_device.gif' width="210")
+
+    br
+    .row
+      .col-md-8
+        != gadget.description.replace(/\n/g, '<br>')
+        br
+        br
+
+      .col-md-4.tools-box
+        a.btn(
+          href="/bookings/" + gadget._id + "/new",
+          data-toggle="modal",
+          data-target="#bookingModal"
+        ).book-btn.btn|Book
+
+        if(user.role == 'admin')
+          a.btn(href="/gadgets/"+gadget._id+"/edit") Edit
+          a.btn.btn-danger(data-toggle="modal" data-target="#modal") Delete
+
+        .info
+          b version
+          br
+          span= gadget.os
+          br
+          br
+          b gadget ID
+          br
+          span= gadget.hwid
+          br
+          br
+          b type
+          br
+          span= gadget.type
+          br
+          br
+          b location
+          br
+          span= gadget.location
+          br
+
+    br
+    br
+    .table-responsive
+      table.table
+        tr
+        if (user.role === 'admin')
+          th Name
+          th Device (ID)
+          th Start Reservation
+          th End Reservation
+          th Handout
+          th Takeback
+          th
+          th
+          th
+          - each booking in bookings
+            include ../bookings/list-entry-admin.jade
+
+        else
+          th Device (ID)
+          th Start Reservation
+          th End Reservation
+          th Status
+          th
+          th
+          - each booking in bookings
+            include ../bookings/list-entry.jade
+

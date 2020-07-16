@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+
+  form(action='/gadgets/', method='post', id='search')
+    .clearfix
+      input(type='search', name='q', value=q
+        placeholder='Search gadgets by brand, model, type, #hwid,...' )
+
+      input(type="submit", value="").btn.btn-search
+      a.btn.btn-filter(data-toggle="collapse" data-target="#filter")
+      if(user.role == 'admin')
+        a(href='/gadgets/new').btn.btn-add
+
+    div.collapse(id="filter" class=((l || t) && Object.keys(gadgets).length > 1) ? "in" : "")
+      .content.row
+        .col-sm-2
+          h4 Location
+          - each location in locations
+            input(type="checkbox", name="l[]", value=location, id="loc-" + location,
+              checked=(!l || l.indexOf(location) !== -1)
+            )
+            label(for="loc-" + location)
+              | &nbsp;
+              = location
+            br
+
+        .col-sm-2
+          h4 Type
+          - each type in types
+            input(type="checkbox", name="t[]", value=type, id="type-" + type,
+              checked=(!t || t.indexOf(type) !== -1))
+            label(for="type-" + type)
+              | &nbsp;
+              = type
+            br
+
+  if (Object.keys(gadgets).length === 0)
+    h4 No gadgets found...
+  else
+    ul.nav.nav-tabs
+      - var i = 0
+      - each gadgetGroup in gadgets
+        li(class= (i === 0) ? 'active' : '')
+          a(href="#" + gadgetGroup.name, data-toggle="tab")
+            =gadgetGroup.name + " (" + gadgetGroup.count + ")"
+          - i++
+
+    .tab-content
+      br
+      - var i = 0
+      - each gadgetGroup in gadgets
+        .tab-pane(id=gadgetGroup.name, class= (i === 0) ? 'active' : '')
+          - i++
+          ul.gadget-list
+            - each gadget in gadgetGroup.data
+                include entry.jade
+          div.clearfix

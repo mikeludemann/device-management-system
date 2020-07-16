@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+  .table-responsive
+    table
+      tr
+        th Displayname
+        th Name
+        th Email
+        th Auth-Type
+        th Role
+        th
+      - each user in users
+        tr(class=user.disabled === true ? 'deactive' : '')
+          td
+            =user.displayname
+          td
+            if (user.name)
+              =user.name
+            else
+              | -
+          td
+            if (user.email)
+              =user.email
+            else
+              | -
+          td
+            =user.type
+          td
+            =user.role
+          td.tools
+            a(href='/users/' + user._id).edit
+
+  br
+  p.small
+    | Users with role edior are allowed to transfer a booking to an other user. Users
+    | with @sevenval.com email adresses will automatically become editors on first login.
